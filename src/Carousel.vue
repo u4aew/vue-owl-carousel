@@ -306,23 +306,7 @@ export default {
     });
 
     if (!this.loop) {
-      $owl.on('changed.owl.carousel', (event) => {
-        // start
-        if (event.item.index === 0) {
-          this.showPrev = false;
-          this.showNext = true;
-        } else {
-          const currnetel = Math.floor(event.item.index + event.page.size);
-          // last
-          if (currnetel === event.item.count) {
-            this.showPrev = true;
-            this.showNext = false;
-          } else {
-            this.showPrev = true;
-            this.showNext = true;
-          }
-        }
-      });
+      $owl.on('changed.owl.carousel', this.navListener(event));
     }
   },
   beforeDestroy() {
@@ -330,15 +314,31 @@ export default {
       $owl.off(`${eventName}.owl.carousel`, this.carouselListener(eventName, event));
       this.$off(eventName);
     });
+    $owl.off('changed.owl.carousel', this.navListener(event));
     $owl.trigger('destroy.owl.carousel');
   },
-
   methods: {
     generateUniqueId() {
       return Math.random().toString(36).substring(2, 15);
     },
     carouselListener(eventName, event) {
       this.$emit(eventName, event);
+    },
+    navListener(event) {
+      if (event.item.index === 0) {
+        this.showPrev = false;
+        this.showNext = true;
+      } else {
+        const currnetel = Math.floor(event.item.index + event.page.size);
+        // last
+        if (currnetel === event.item.count) {
+          this.showPrev = true;
+          this.showNext = false;
+        } else {
+          this.showPrev = true;
+          this.showNext = true;
+        }
+      }
     },
   },
 };

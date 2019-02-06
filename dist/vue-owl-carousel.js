@@ -436,22 +436,7 @@
             });
 
             if (!this.loop) {
-              $owl.on('changed.owl.carousel', function (event) {
-                if (event.item.index === 0) {
-                  _this.showPrev = false;
-                  _this.showNext = true;
-                } else {
-                  var currnetel = Math.floor(event.item.index + event.page.size);
-
-                  if (currnetel === event.item.count) {
-                    _this.showPrev = true;
-                    _this.showNext = false;
-                  } else {
-                    _this.showPrev = true;
-                    _this.showNext = true;
-                  }
-                }
-              });
+              $owl.on('changed.owl.carousel', this.navListener(event));
             }
           },
           beforeDestroy: function beforeDestroy() {
@@ -461,9 +446,9 @@
               $owl.off(eventName + '.owl.carousel', _this2.carouselListener(eventName, event));
               _this2.$off(eventName);
             });
+            $owl.off('changed.owl.carousel', this.navListener(event));
             $owl.trigger('destroy.owl.carousel');
           },
-
 
           methods: {
             generateUniqueId: function generateUniqueId() {
@@ -471,6 +456,22 @@
             },
             carouselListener: function carouselListener(eventName, event) {
               this.$emit(eventName, event);
+            },
+            navListener: function navListener(event) {
+              if (event.item.index === 0) {
+                this.showPrev = false;
+                this.showNext = true;
+              } else {
+                var currnetel = Math.floor(event.item.index + event.page.size);
+
+                if (currnetel === event.item.count) {
+                  this.showPrev = true;
+                  this.showNext = false;
+                } else {
+                  this.showPrev = true;
+                  this.showNext = true;
+                }
+              }
             }
           }
         };
