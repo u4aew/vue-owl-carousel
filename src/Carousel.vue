@@ -1,6 +1,5 @@
 <template>
   <div>
-    test test test
     <span v-show="showPrev" :id="prevHandler">
       <slot name="prev" />
     </span>
@@ -15,9 +14,25 @@
 <script>
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel/dist/assets/owl.theme.default.css';
-import 'owl.carousel';
+import 'owl.carousel/dist/owl.carousel';
 
-import events from './utils/events';
+let $owl;
+const events = [
+  'initialize',
+  'initialized',
+  'resize',
+  'resized',
+  'refresh',
+  'refreshed',
+  'update',
+  'updated',
+  'drag',
+  'dragged',
+  'translate',
+  'translated',
+  'to',
+  'changed',
+];
 
 export default {
   name: 'VOwlCarousel',
@@ -166,10 +181,6 @@ export default {
       type: Number,
       default: 200,
     },
-    responsiveBaseElement: {
-        type: String,
-        "default": "window"
-    },
     video: {
       type: Boolean,
       default: false,
@@ -230,8 +241,8 @@ export default {
     };
   },
 
-  mounted: function() {
-    const owl = $('#' + this.elementHandle).owlCarousel({
+  mounted() {
+    $owl = $('#' + this.elementHandle).owlCarousel({
       items: this.items,
       margin: this.margin,
       loop: this.loop,
@@ -268,7 +279,6 @@ export default {
       callbacks: this.callbacks,
       responsive: this.responsive,
       responsiveRefreshRate: this.responsiveRefreshRate,
-      responsiveBaseElement: this.responsiveBaseElement,
       video: this.video,
       videoHeight: this.videoHeight,
       videoWidth: this.videoWidth,
@@ -284,21 +294,19 @@ export default {
     });
 
     $('#' + this.prevHandler).click(function() {
-      owl.trigger('prev.owl.carousel');
+      $owl.trigger('prev.owl.carousel');
     });
 
     $('#' + this.nextHandler).click(function() {
-      owl.trigger('next.owl.carousel');
+      $owl.trigger('next.owl.carousel');
     });
 
     events.forEach((eventName) => {
-      owl.on(`${eventName}.owl.carousel`, (event) => {
-        this.$emit(eventName, event);
-      });
+      $owl.on(`${eventName}.owl.carousel`, this.carouselListener(eventName, event));
     });
 
     if (!this.loop) {
-      owl.on('changed.owl.carousel', (event) => {
+      $owl.on('changed.owl.carousel', (event) => {
         // start
         if (event.item.index === 0) {
           this.showPrev = false;
@@ -317,10 +325,20 @@ export default {
       });
     }
   },
+  beforeDestroy() {
+    events.forEach((eventName) => {
+      $owl.off(`${eventName}.owl.carousel`, this.carouselListener(eventName, event));
+      this.$off(eventName);
+    });
+    $owl.trigger('destroy.owl.carousel');
+  },
 
   methods: {
     generateUniqueId() {
       return Math.random().toString(36).substring(2, 15);
+    },
+    carouselListener(eventName, event) {
+      this.$emit(eventName, event);
     },
   },
 };

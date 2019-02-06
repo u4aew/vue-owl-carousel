@@ -38,17 +38,9 @@ const config = {
     moment: 'moment',
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      minimize: true,
-      sourceMap: false,
-      mangle: true,
-      compress: {
-        warnings: false,
-      },
-    }),
     new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
+      '$': 'jquery',
+      'jQuery': 'jquery',
       'window.jQuery': 'jquery',
     }),
   ],
@@ -58,7 +50,7 @@ module.exports = [
   merge(config, {
     entry: path.resolve(__dirname + '/src/plugin.js'),
     output: {
-      filename: 'vue-owl-carousel.min.js',
+      filename: 'vue-owl-carousel.js',
       libraryTarget: 'window',
       library: 'VueOwlCarousel',
     },
