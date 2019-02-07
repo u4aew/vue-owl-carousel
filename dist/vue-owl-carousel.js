@@ -436,7 +436,7 @@
             });
 
             if (!this.loop) {
-              $owl.on('changed.owl.carousel', this.navListener(event));
+              $owl.on('changed.owl.carousel', this.navListener);
             }
           },
           beforeDestroy: function beforeDestroy() {
@@ -446,7 +446,7 @@
               $owl.off(eventName + '.owl.carousel', _this2.carouselListener(eventName, event));
               _this2.$off(eventName);
             });
-            $owl.off('changed.owl.carousel', this.navListener(event));
+            $owl.off('changed.owl.carousel', this.navListener);
             $owl.trigger('destroy.owl.carousel');
           },
 

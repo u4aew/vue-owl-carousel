@@ -306,7 +306,7 @@ export default {
     });
 
     if (!this.loop) {
-      $owl.on('changed.owl.carousel', this.navListener(event));
+      $owl.on('changed.owl.carousel', this.navListener);
     }
   },
   beforeDestroy() {
@@ -314,7 +314,7 @@ export default {
       $owl.off(`${eventName}.owl.carousel`, this.carouselListener(eventName, event));
       this.$off(eventName);
     });
-    $owl.off('changed.owl.carousel', this.navListener(event));
+    $owl.off('changed.owl.carousel', this.navListener);
     $owl.trigger('destroy.owl.carousel');
   },
   methods: {
